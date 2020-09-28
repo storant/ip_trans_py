@@ -1,5 +1,5 @@
 import os
-from os import path 
+from os import path, chdir
 
 import time 
 from datetime import date #needs to be installed in virtual env
@@ -38,10 +38,11 @@ def remove_cols(dataframe,col_to_keep):
 def df_to_list(df):
     study = df['Study'].astype(str).tolist()
     subject = df['Subject'].astype(str).tolist()
+    jupyter = df['Jupyter'].astype(str).tolist()
 
-    fresh_list = [[x,y] for x,y in zip(study,subject)] #makes a 2d list of study and subject for folder creation
-    fresh_set = { (nested[0],nested[1]) for nested in fresh_list } #converts it to a set to remove duplicates
-    fresh_set = [[x,y] for x,y in fresh_set] #back to 2d list
+    fresh_list = [[x,y,z] for x,y,z in zip(study,subject,jupyter)] #makes a 2d list of study and subject for folder creation
+    fresh_set = { (nested[0],nested[1],nested[2]) for nested in fresh_list } #converts it to a set to remove duplicates
+    fresh_set = [[x,y] for x,y,z in fresh_set if z=='0'] #back to 2d list
 
     return fresh_set
 
@@ -53,7 +54,7 @@ def df_paste_create_report(a_list):
             try:
                 copyfile(item[4],item[5])
             except FileNotFoundError:
-                print('\nDO NOT SEND OUT REPORT.\nPlease run the intergrity check. You have either missing or missnamed files.')
+                print('\nDO NOT SEND OUT REPORT.\nPlease run the intergrity check. You have either missing or missnamed files.\nThere might be more errors than necessarily outlined here.\nPlease delete the report generated today as well which contains this error.\n You will be able to rerun the report generation after making correcitons after the intergrity check! ')
                 print('File note found (as per xlsx database)')
                 print(item[3])
                 time.sleep(5)
@@ -91,7 +92,9 @@ def save_xlsx(dir_path,report_path,today,dfr,keep_cols):
     dfr = remove_cols(dfr,keep_cols)
     os.chdir(report_path) #cahnge path to the today directory report
     name = str(today)+'_report.xlsx'
-    dfr.to_excel(name, sheet_name='Main_Table')  
+    dfr.reset_index(inplace = True) #reset the index to 0, idk why the above one doesnt do it
+    dfr.to_excel(name, sheet_name='Main_Table') #save excel spreadsheet
+    create_zip(today) #create the zip file
     os.chdir(dir_path)
 
 def create_zip(today):

@@ -1,14 +1,13 @@
 import os
 from os import path
 import sys
-import pandas as pd #comment out when no testing
+#import pandas as pd #comment out when no testing
 
 from new_func import remove_cols,get_dir
 
 # returns a list of errors!
 # input: df and path
 # output: returns a list of all mismatchess
-
 
 def integrity_check(df,dir_path):
     col_to_keep = ['Study','Subject','Sugg_Name'] #list of columns to keep
@@ -35,7 +34,7 @@ def list_of_files(df,dir_path,report_folder,today):
     col_to_keep = ['Study','Subject','Sugg_Name','Jupyter'] #list of columns to keep
 
     df = remove_cols(df,col_to_keep)
-
+    
     name = df['Sugg_Name'].tolist()
     name = [x+'.png' for x in name] #adding png at the end for the file naem
 
@@ -48,7 +47,6 @@ def list_of_files(df,dir_path,report_folder,today):
 
     full_list = [[jupyter, study, subject, name, os.path.join(dir_path,study,subject,name),os.path.join(dir_path,report_folder,today,study,subject,name)] for jupyter,study,subject,name in full_list]   #adds the fulll directory of the invoice to the nested lists
     #location_full_list = [[a,b,c,d,os.path.exists(d)] for a,b,c,d in full_list]
-
     return full_list
 
 
