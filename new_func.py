@@ -92,7 +92,7 @@ def save_xlsx(dir_path,report_path,today,dfr,keep_cols):
     dfr = remove_cols(dfr,keep_cols)
     os.chdir(report_path) #cahnge path to the today directory report
     name = str(today)+'_report.xlsx'
-    dfr.reset_index(inplace = True) #reset the index to 0, idk why the above one doesnt do it
+    dfr.reset_index(inplace = True, drop = True) #reset the index to 0, idk why the above one doesnt do it
     dfr.to_excel(name, sheet_name='Main_Table') #save excel spreadsheet
     create_zip(today) #create the zip file
     os.chdir(dir_path)
